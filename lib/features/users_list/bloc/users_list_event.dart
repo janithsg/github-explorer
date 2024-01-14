@@ -7,12 +7,12 @@ sealed class UsersListEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadUsersListEvent extends UsersListEvent {
-  final int since;
-  final int perPage;
+class LoadInitialDataEvent extends UsersListEvent {}
 
-  const LoadUsersListEvent({
+class PaginateUsersListEvent extends UsersListEvent {
+  final int since;
+
+  const PaginateUsersListEvent({
     required this.since,
-    required this.perPage,
   });
 }

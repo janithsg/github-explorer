@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:gh_users_viewer/core/constants/enums.dart';
 import 'package:gh_users_viewer/core/networking/exceptions/custom_exception.dart';
@@ -45,8 +44,6 @@ class ApiClient {
   }
 
   dynamic _handleApiResponse(http.Response response) {
-    log(response.body);
-
     switch (response.statusCode) {
       case 200:
       case 404:

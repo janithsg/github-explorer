@@ -65,19 +65,41 @@ class _UsersListScreenState extends State<UsersListScreen> {
 
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView.separated(
-                itemBuilder: (context, index) {
-                  return SingleListItem(
-                    userData: state.usersList[index],
-                  );
+              child: NotificationListener<ScrollNotification>(
+                onNotification: (notification) {
+                  if (notification is ScrollEndNotification && notification.metrics.extentAfter == 0) {
+                    if (!state.isPaginating) {
+                      BlocProvider.of<UsersListBloc>(context).add(
+                        PaginateUsersListEvent(since: state.lastId),
+                      );
+                    }
+                  }
+                  return false;
                 },
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    color: Colors.blueGrey,
-                    thickness: 0.2,
-                  );
-                },
-                itemCount: state.usersList.length,
+                child: ListView.separated(
+                  itemBuilder: (context, index) {
+                    if (index < state.usersList.length) {
+                      return SingleListItem(
+                        userData: state.usersList[index],
+                      );
+                    } else {
+                      return const ListTile(
+                        title: SizedBox(
+                          width: 50,
+                          height: 50,
+                          child: Center(child: CircularProgressIndicator()),
+                        ),
+                      );
+                    }
+                  },
+                  separatorBuilder: (context, index) {
+                    return const Divider(
+                      color: Colors.blueGrey,
+                      thickness: 0.2,
+                    );
+                  },
+                  itemCount: state.usersList.length + 1,
+                ),
               ),
             );
           },

@@ -8,7 +8,7 @@ class UsersListProvider extends BlocProvider<UsersListBloc> {
   }) : super(
           create: (context) => UsersListBloc()
             ..add(
-              const LoadUsersListEvent(since: 1, perPage: 30),
+              LoadInitialDataEvent(),
             ),
           child: const UsersListScreen(),
         );

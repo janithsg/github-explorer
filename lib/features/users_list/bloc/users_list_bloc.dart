@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gh_users_viewer/core/constants/enums.dart';
@@ -13,25 +11,50 @@ part 'users_list_state.dart';
 class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   final _usersListRepository = UsersListRepository();
 
-  UsersListBloc() : super(const UsersListState.loading()) {
-    on<LoadUsersListEvent>(_onLoadUsersList);
+  UsersListBloc() : super(const UsersListState.initial()) {
+    on<LoadInitialDataEvent>(_onLoadInitialUsersList);
+    on<PaginateUsersListEvent>(_onPaginateUsersList);
   }
 
-  void _onLoadUsersList(LoadUsersListEvent event, Emitter<UsersListState> emit) async {
+  void _onLoadInitialUsersList(LoadInitialDataEvent event, Emitter<UsersListState> emit) async {
     try {
-      List<UsersListItem>? usersList = await _usersListRepository.getUsersList(since: event.since, perPage: event.perPage);
+      List<UsersListItem>? usersList = await _usersListRepository.getUsersList(since: state.lastId, perPage: state.perPage);
 
-      if (usersList != null) {
-        emit(UsersListState.loaded(usersList));
+      if (usersList != null && usersList.isNotEmpty) {
+        emit(UsersListState.loaded(usersList, usersList.last.id));
       }
     } on FetchDataException catch (error) {
-      log("error1");
       emit(UsersListState.error(ErrorTypes.networkError, error.toString()));
     } on UnauthorisedException catch (error) {
-      log("error2");
       emit(UsersListState.error(ErrorTypes.authError, error.toString()));
     } catch (e) {
-      log("error3");
+      emit(const UsersListState.error(ErrorTypes.unknownError, "Something went wrong"));
+    }
+  }
+
+  void _onPaginateUsersList(PaginateUsersListEvent event, Emitter<UsersListState> emit) async {
+    try {
+      List<UsersListItem>? currentList = state.usersList;
+
+      emit(UsersListState.paginating(currentList));
+
+      List<UsersListItem>? usersList = await _usersListRepository.getUsersList(since: event.since, perPage: state.perPage);
+
+      // Update current list
+      if (usersList != null) {
+        currentList.addAll(usersList.toList());
+      }
+
+      if (usersList != null && usersList.isNotEmpty) {
+        emit(UsersListState.paginated(currentList, false, usersList.last.id));
+      } else if (usersList == null || usersList.isEmpty) {
+        emit(UsersListState.paginated(currentList, true, currentList.last.id));
+      }
+    } on FetchDataException catch (error) {
+      emit(UsersListState.error(ErrorTypes.networkError, error.toString()));
+    } on UnauthorisedException catch (error) {
+      emit(UsersListState.error(ErrorTypes.authError, error.toString()));
+    } catch (e) {
       emit(const UsersListState.error(ErrorTypes.unknownError, "Something went wrong"));
     }
   }
