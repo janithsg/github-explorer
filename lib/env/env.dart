@@ -8,4 +8,6 @@ abstract class Env {
   static String githubPAT = _Env.githubPAT;
   @EnviedField(varName: 'API_ROOT')
   static String rootUrl = _Env.rootUrl;
+  @EnviedField(varName: 'API_VERSION')
+  static String apiVersion = _Env.apiVersion;
 }

@@ -6,7 +6,10 @@ class UsersListProvider extends BlocProvider<UsersListBloc> {
   UsersListProvider({
     super.key,
   }) : super(
-          create: (context) => UsersListBloc(),
+          create: (context) => UsersListBloc()
+            ..add(
+              const LoadUsersListEvent(since: 1, perPage: 30),
+            ),
           child: const UsersListScreen(),
         );
 }

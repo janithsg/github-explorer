@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:gh_users_viewer/core/constants/enums.dart';
 import 'package:gh_users_viewer/core/networking/exceptions/custom_exception.dart';
@@ -7,7 +8,7 @@ import 'package:http/http.dart' as http;
 
 class ApiClient {
   // This method make the API call with access token
-  Future<Map<String, dynamic>?> makeAuthorizedApiRequest({
+  Future<dynamic> makeAuthorizedApiRequest({
     required HttpMethods method,
     required String url,
     required Map<String, dynamic>? params,
@@ -19,7 +20,7 @@ class ApiClient {
 
     // Set access token and relavant headers
     Map<String, String> headers = {};
-    headers.addEntries({"Content-Type": "application/vnd.github+json"}.entries);
+    headers.addEntries({"Content-Type": "application/json"}.entries);
     headers.addEntries({"Authorization": "Bearer ${Env.githubPAT}"}.entries);
     headers.addEntries({"X-GitHub-Api-Version": Env.apiVersion}.entries);
 
@@ -30,7 +31,7 @@ class ApiClient {
     }
   }
 
-  Future<Map<String, dynamic>?> _makeGetRequest({required Uri uri, Map<String, String>? headers}) async {
+  Future<dynamic> _makeGetRequest({required Uri uri, Map<String, String>? headers}) async {
     // Make API Call
     final response = await http.get(
       uri,
@@ -38,20 +39,18 @@ class ApiClient {
     );
 
     // Build Response JSON
-    Map<String, dynamic>? responseJson = _handleApiResponse(response);
+    dynamic responseJson = _handleApiResponse(response);
 
     return responseJson;
   }
 
-  Map<String, dynamic>? _handleApiResponse(http.Response response) {
+  dynamic _handleApiResponse(http.Response response) {
+    log(response.body);
+
     switch (response.statusCode) {
       case 200:
       case 404:
-        final utf8Str = utf8.decode(
-          response.bodyBytes,
-          allowMalformed: true,
-        );
-        Map<String, dynamic>? responseAsJson = json.decode(utf8Str);
+        dynamic responseAsJson = json.decode(response.body);
         return responseAsJson;
       case 401:
       case 403:
