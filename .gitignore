@@ -1,3 +1,7 @@
+# Keys
+.env.dev
+/lib/env/env.g.dart
+
 # Miscellaneous
 *.class
 *.log
