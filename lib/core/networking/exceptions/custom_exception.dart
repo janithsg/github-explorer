@@ -10,6 +10,10 @@ class CustomException implements Exception {
   }
 }
 
+class DetailsNotFoundException extends CustomException {
+  DetailsNotFoundException([String? message]) : super(message, "Not Found: ");
+}
+
 class FetchDataException extends CustomException {
   FetchDataException([String? message]) : super(message, "Error During Communication: ");
 }

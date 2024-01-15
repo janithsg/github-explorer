@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gh_users_viewer/core/constants/enums.dart';
 import 'package:gh_users_viewer/core/networking/exceptions/custom_exception.dart';
+import 'package:gh_users_viewer/features/user_details/data/model/user_details_model.dart';
 import 'package:gh_users_viewer/features/users_list/data/model/users_list_item.dart';
 import 'package:gh_users_viewer/features/users_list/data/repository/users_list_repository.dart';
 
@@ -14,6 +15,7 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   UsersListBloc() : super(const UsersListState.initial()) {
     on<LoadInitialDataEvent>(_onLoadInitialUsersList);
     on<PaginateUsersListEvent>(_onPaginateUsersList);
+    on<GetUserDetailsByUsernameEvent>(_onTapUserFromListEvent);
   }
 
   void _onLoadInitialUsersList(LoadInitialDataEvent event, Emitter<UsersListState> emit) async {
@@ -50,6 +52,28 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
       } else if (usersList == null || usersList.isEmpty) {
         emit(UsersListState.paginated(currentList, true, currentList.last.id));
       }
+    } on FetchDataException catch (error) {
+      emit(UsersListState.error(ErrorTypes.networkError, error.toString()));
+    } on UnauthorisedException catch (error) {
+      emit(UsersListState.error(ErrorTypes.authError, error.toString()));
+    } catch (e) {
+      emit(const UsersListState.error(ErrorTypes.unknownError, "Something went wrong"));
+    }
+  }
+
+  void _onTapUserFromListEvent(GetUserDetailsByUsernameEvent event, Emitter<UsersListState> emit) async {
+    List<UsersListItem>? currentList = state.usersList;
+
+    try {
+      emit(UsersListState.fetchingUserDetails(currentList));
+
+      UserDetailsModel? userDetails = await _usersListRepository.getUserDetails(username: event.username);
+
+      if (userDetails != null) {
+        emit(UsersListState.fetchedUserDetails(currentList, userDetails));
+      }
+    } on DetailsNotFoundException catch (_) {
+      emit(UsersListState.fetchUserDetailsError(currentList, "User details not found"));
     } on FetchDataException catch (error) {
       emit(UsersListState.error(ErrorTypes.networkError, error.toString()));
     } on UnauthorisedException catch (error) {

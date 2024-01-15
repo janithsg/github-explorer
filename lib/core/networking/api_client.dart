@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:gh_users_viewer/core/constants/enums.dart';
 import 'package:gh_users_viewer/core/networking/exceptions/custom_exception.dart';
@@ -46,9 +47,10 @@ class ApiClient {
   dynamic _handleApiResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
-      case 404:
         dynamic responseAsJson = json.decode(response.body);
         return responseAsJson;
+      case 404:
+        throw DetailsNotFoundException("Details Not Found");
       case 401:
       case 403:
         throw UnauthorisedException("Access token is invalid");

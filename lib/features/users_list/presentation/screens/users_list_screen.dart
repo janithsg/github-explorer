@@ -81,6 +81,11 @@ class _UsersListScreenState extends State<UsersListScreen> {
                     if (index < state.usersList.length) {
                       return SingleListItem(
                         userData: state.usersList[index],
+                        onTap: () {
+                          BlocProvider.of<UsersListBloc>(context).add(
+                            GetUserDetailsByUsernameEvent(username: state.usersList[index].login),
+                          );
+                        },
                       );
                     } else {
                       return const ListTile(

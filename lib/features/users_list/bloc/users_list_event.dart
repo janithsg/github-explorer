@@ -16,3 +16,11 @@ class PaginateUsersListEvent extends UsersListEvent {
     required this.since,
   });
 }
+
+class GetUserDetailsByUsernameEvent extends UsersListEvent {
+  final String username;
+
+  const GetUserDetailsByUsernameEvent({
+    required this.username,
+  });
+}

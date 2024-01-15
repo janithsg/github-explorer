@@ -10,6 +10,10 @@ class UsersListState extends Equatable {
   final ErrorTypes errorType;
   final String errorMsg;
   final bool donePaginating;
+  final bool isFetchingUserDetails;
+  final UserDetailsModel? userDetails;
+  final bool isUserDetailsError;
+  final String userDetailsErrorMsg;
 
   const UsersListState._({
     this.isLoading = false,
@@ -21,6 +25,10 @@ class UsersListState extends Equatable {
     this.errorType = ErrorTypes.none,
     this.errorMsg = "",
     this.donePaginating = false,
+    this.isFetchingUserDetails = false,
+    this.userDetails,
+    this.isUserDetailsError = false,
+    this.userDetailsErrorMsg = "",
   });
 
   const UsersListState.initial() : this._(isLoading: true, lastId: 0);
@@ -57,6 +65,30 @@ class UsersListState extends Equatable {
           isPaginating: false,
         );
 
+  const UsersListState.fetchingUserDetails(
+    List<UsersListItem> list,
+  ) : this._(
+          usersList: list,
+          isFetchingUserDetails: true,
+        );
+
+  const UsersListState.fetchedUserDetails(
+    List<UsersListItem> list,
+    UserDetailsModel userDetailsModel,
+  ) : this._(
+          usersList: list,
+          userDetails: userDetailsModel,
+        );
+
+  const UsersListState.fetchUserDetailsError(
+    List<UsersListItem> list,
+    String fetchingError,
+  ) : this._(
+          usersList: list,
+          isUserDetailsError: true,
+          userDetailsErrorMsg: fetchingError,
+        );
+
   @override
   List<Object> get props => [
         usersList,
@@ -64,5 +96,8 @@ class UsersListState extends Equatable {
         isPaginating,
         isError,
         errorType,
+        errorMsg,
+        donePaginating,
+        isFetchingUserDetails,
       ];
 }

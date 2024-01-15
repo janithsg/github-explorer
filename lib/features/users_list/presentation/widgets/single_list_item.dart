@@ -3,8 +3,13 @@ import 'package:gh_users_viewer/features/users_list/data/model/users_list_item.d
 
 class SingleListItem extends StatelessWidget {
   final UsersListItem userData;
+  final Function()? onTap;
 
-  const SingleListItem({super.key, required this.userData});
+  const SingleListItem({
+    super.key,
+    required this.userData,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,7 @@ class SingleListItem extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
-      onTap: () {},
+      onTap: onTap,
     );
   }
 }
