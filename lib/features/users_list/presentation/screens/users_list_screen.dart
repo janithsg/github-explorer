@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:gh_users_viewer/core/widgets/app_bar/custom_appbar.dart';
 import 'package:gh_users_viewer/features/user_repository/bloc/repo_data_provider.dart';
 import 'package:gh_users_viewer/features/users_list/bloc/users_list_bloc.dart';
@@ -18,15 +19,29 @@ class _UsersListScreenState extends State<UsersListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<UsersListBloc, UsersListState>(
-      listenWhen: (previous, current) => current.userDetails != null,
-      listener: (context, state) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => RepoDataProvider(user: state.userDetails!),
-          ),
-        );
-      },
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<UsersListBloc, UsersListState>(
+          listenWhen: (previous, current) => current.userDetails != null,
+          listener: (context, state) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => RepoDataProvider(user: state.userDetails!),
+              ),
+            );
+          },
+        ),
+        BlocListener<UsersListBloc, UsersListState>(
+          listenWhen: (previous, current) => previous.isFetchingUserDetails != current.isFetchingUserDetails,
+          listener: (context, state) {
+            if (state.isFetchingUserDetails == true) {
+              EasyLoading.show();
+            } else {
+              EasyLoading.dismiss();
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         appBar: CustomAppBar(
           title: "Explore GitHub",
