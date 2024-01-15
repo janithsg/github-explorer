@@ -1,13 +1,13 @@
 import 'package:gh_users_viewer/core/constants/api_constants.dart';
 import 'package:gh_users_viewer/core/constants/enums.dart';
 import 'package:gh_users_viewer/core/networking/api_client.dart';
-import 'package:gh_users_viewer/features/user_details/data/model/user_details_model.dart';
-import 'package:gh_users_viewer/features/users_list/data/model/users_list_item.dart';
+import 'package:gh_users_viewer/features/user_repository/data/model/user_details_model.dart';
+import 'package:gh_users_viewer/features/users_list/data/model/users_list_item_model.dart';
 
 class UsersListRepository {
   final _apiClient = ApiClient();
 
-  Future<List<UsersListItem>?> getUsersList({required int since, required int perPage}) async {
+  Future<List<UsersListItemModel>?> getUsersList({required int since, required int perPage}) async {
     // Get url
     String url = ApiConstants.getUsersList;
 
@@ -25,7 +25,7 @@ class UsersListRepository {
       headers: {},
     );
 
-    List<UsersListItem>? usersList = UsersListItem.fromJsonArray(resData);
+    List<UsersListItemModel>? usersList = UsersListItemModel.fromJsonArray(resData);
 
     return usersList;
   }

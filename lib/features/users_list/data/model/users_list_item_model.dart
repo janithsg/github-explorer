@@ -1,17 +1,17 @@
-class UsersListItem {
+class UsersListItemModel {
   String login;
   int id;
   String avatarUrl;
   String type;
 
-  UsersListItem({
+  UsersListItemModel({
     required this.login,
     required this.id,
     required this.avatarUrl,
     required this.type,
   });
 
-  factory UsersListItem.fromJson(Map<String, dynamic> json) => UsersListItem(
+  factory UsersListItemModel.fromJson(Map<String, dynamic> json) => UsersListItemModel(
         login: json["login"],
         id: json["id"],
         avatarUrl: json["avatar_url"],
@@ -25,8 +25,8 @@ class UsersListItem {
         "type": type,
       };
 
-  static List<UsersListItem> fromJsonArray(dynamic jsonArray) {
+  static List<UsersListItemModel> fromJsonArray(dynamic jsonArray) {
     final List<dynamic> list = jsonArray;
-    return list.map((jsonObject) => UsersListItem.fromJson(jsonObject)).toList();
+    return list.map((jsonObject) => UsersListItemModel.fromJson(jsonObject)).toList();
   }
 }

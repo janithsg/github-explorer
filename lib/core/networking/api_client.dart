@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
-
 import 'package:gh_users_viewer/core/constants/enums.dart';
 import 'package:gh_users_viewer/core/networking/exceptions/custom_exception.dart';
 import 'package:gh_users_viewer/env/env.dart';
@@ -13,7 +11,7 @@ class ApiClient {
     required String url,
     required Map<String, dynamic>? params,
     required Map<String, dynamic>? body,
-    required Map<String, String> headers,
+    required Map<String, String>? headers,
   }) async {
     // Build Uri
     Uri apiPath = Uri.parse(url).replace(queryParameters: params);

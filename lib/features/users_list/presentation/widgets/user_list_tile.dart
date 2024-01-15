@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:gh_users_viewer/features/users_list/data/model/users_list_item.dart';
+import 'package:gh_users_viewer/features/users_list/data/model/users_list_item_model.dart';
 
-class SingleListItem extends StatelessWidget {
-  final UsersListItem userData;
+class UserListTile extends StatelessWidget {
+  final UsersListItemModel userData;
   final Function()? onTap;
 
-  const SingleListItem({
+  const UserListTile({
     super.key,
     required this.userData,
     required this.onTap,

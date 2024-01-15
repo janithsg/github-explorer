@@ -1,7 +1,7 @@
 part of 'users_list_bloc.dart';
 
 class UsersListState extends Equatable {
-  final List<UsersListItem> usersList;
+  final List<UsersListItemModel> usersList;
   final int lastId;
   final int perPage;
   final bool isLoading;
@@ -33,7 +33,7 @@ class UsersListState extends Equatable {
 
   const UsersListState.initial() : this._(isLoading: true, lastId: 0);
 
-  const UsersListState.loaded(List<UsersListItem> list, int lastId)
+  const UsersListState.loaded(List<UsersListItemModel> list, int lastId)
       : this._(
           usersList: list,
           isLoading: false,
@@ -42,13 +42,13 @@ class UsersListState extends Equatable {
         );
 
   const UsersListState.paginating(
-    List<UsersListItem> list,
+    List<UsersListItemModel> list,
   ) : this._(
           usersList: list,
           isPaginating: true,
         );
 
-  const UsersListState.paginated(List<UsersListItem> list, bool donePaginated, int lastId)
+  const UsersListState.paginated(List<UsersListItemModel> list, bool donePaginated, int lastId)
       : this._(
           usersList: list,
           isPaginating: false,
@@ -66,14 +66,14 @@ class UsersListState extends Equatable {
         );
 
   const UsersListState.fetchingUserDetails(
-    List<UsersListItem> list,
+    List<UsersListItemModel> list,
   ) : this._(
           usersList: list,
           isFetchingUserDetails: true,
         );
 
   const UsersListState.fetchedUserDetails(
-    List<UsersListItem> list,
+    List<UsersListItemModel> list,
     UserDetailsModel userDetailsModel,
   ) : this._(
           usersList: list,
@@ -81,7 +81,7 @@ class UsersListState extends Equatable {
         );
 
   const UsersListState.fetchUserDetailsError(
-    List<UsersListItem> list,
+    List<UsersListItemModel> list,
     String fetchingError,
   ) : this._(
           usersList: list,

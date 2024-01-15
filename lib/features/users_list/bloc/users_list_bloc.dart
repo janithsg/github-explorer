@@ -2,8 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:gh_users_viewer/core/constants/enums.dart';
 import 'package:gh_users_viewer/core/networking/exceptions/custom_exception.dart';
-import 'package:gh_users_viewer/features/user_details/data/model/user_details_model.dart';
-import 'package:gh_users_viewer/features/users_list/data/model/users_list_item.dart';
+import 'package:gh_users_viewer/features/user_repository/data/model/user_details_model.dart';
+import 'package:gh_users_viewer/features/users_list/data/model/users_list_item_model.dart';
 import 'package:gh_users_viewer/features/users_list/data/repository/users_list_repository.dart';
 
 part 'users_list_event.dart';
@@ -20,7 +20,7 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
 
   void _onLoadInitialUsersList(LoadInitialDataEvent event, Emitter<UsersListState> emit) async {
     try {
-      List<UsersListItem>? usersList = await _usersListRepository.getUsersList(since: state.lastId, perPage: state.perPage);
+      List<UsersListItemModel>? usersList = await _usersListRepository.getUsersList(since: state.lastId, perPage: state.perPage);
 
       if (usersList != null && usersList.isNotEmpty) {
         emit(UsersListState.loaded(usersList, usersList.last.id));
@@ -36,11 +36,11 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
 
   void _onPaginateUsersList(PaginateUsersListEvent event, Emitter<UsersListState> emit) async {
     try {
-      List<UsersListItem>? currentList = state.usersList;
+      List<UsersListItemModel>? currentList = state.usersList;
 
       emit(UsersListState.paginating(currentList));
 
-      List<UsersListItem>? usersList = await _usersListRepository.getUsersList(since: event.since, perPage: state.perPage);
+      List<UsersListItemModel>? usersList = await _usersListRepository.getUsersList(since: event.since, perPage: state.perPage);
 
       // Update current list
       if (usersList != null) {
@@ -62,7 +62,7 @@ class UsersListBloc extends Bloc<UsersListEvent, UsersListState> {
   }
 
   void _onTapUserFromListEvent(GetUserDetailsByUsernameEvent event, Emitter<UsersListState> emit) async {
-    List<UsersListItem>? currentList = state.usersList;
+    List<UsersListItemModel>? currentList = state.usersList;
 
     try {
       emit(UsersListState.fetchingUserDetails(currentList));
