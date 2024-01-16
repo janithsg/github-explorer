@@ -5,6 +5,7 @@ import 'package:gh_users_viewer/core/widgets/app_bar/custom_appbar.dart';
 import 'package:gh_users_viewer/features/user_repository/bloc/repo_data_provider.dart';
 import 'package:gh_users_viewer/features/users_list/bloc/users_list_bloc.dart';
 import 'package:gh_users_viewer/features/users_list/data/repository/users_list_repository.dart';
+import 'package:gh_users_viewer/features/users_list/presentation/widgets/find_user_alert.dart';
 import 'package:gh_users_viewer/features/users_list/presentation/widgets/user_list_tile.dart';
 
 class UsersListScreen extends StatefulWidget {
@@ -16,6 +17,14 @@ class UsersListScreen extends StatefulWidget {
 
 class _UsersListScreenState extends State<UsersListScreen> {
   UsersListRepository repository = UsersListRepository();
+
+  late UsersListBloc _usersListBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _usersListBloc = BlocProvider.of<UsersListBloc>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +56,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
           title: "Explore GitHub",
           trailing: [
             IconButton(
-              onPressed: () {
-                repository.getUsersList(since: 1, perPage: 30);
-              },
+              onPressed: _showSearchPopup,
               icon: const Icon(Icons.search_outlined),
             ),
           ],
@@ -94,7 +101,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
                   onNotification: (notification) {
                     if (notification is ScrollEndNotification && notification.metrics.extentAfter == 0) {
                       if (!state.isPaginating) {
-                        BlocProvider.of<UsersListBloc>(context).add(
+                        _usersListBloc.add(
                           PaginateUsersListEvent(since: state.lastId),
                         );
                       }
@@ -107,7 +114,7 @@ class _UsersListScreenState extends State<UsersListScreen> {
                         return UserListTile(
                           userData: state.usersList[index],
                           onTap: () {
-                            BlocProvider.of<UsersListBloc>(context).add(
+                            _usersListBloc.add(
                               GetUserDetailsByUsernameEvent(username: state.usersList[index].login),
                             );
                           },
@@ -136,6 +143,19 @@ class _UsersListScreenState extends State<UsersListScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  Future<void> _showSearchPopup() async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return BlocProvider.value(
+          value: _usersListBloc,
+          child: const FindUserAlert(),
+        );
+      },
+      barrierDismissible: false,
     );
   }
 }

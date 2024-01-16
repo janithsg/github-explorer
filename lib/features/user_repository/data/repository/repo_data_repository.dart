@@ -26,6 +26,9 @@ class RepoDataRepository {
 
     List<RepositoryListItem>? reposList = RepositoryListItem.fromJsonArray(resData);
 
+    // Filter out forks
+    reposList = reposList.where((repo) => repo.fork == false).toList();
+
     // Fetch languages of each repo
     await Future.forEach<RepositoryListItem>(reposList, (repoItem) async {
       repoItem.languageList = await getLanguagesOfRepos(repoName: repoItem.fullName!);
