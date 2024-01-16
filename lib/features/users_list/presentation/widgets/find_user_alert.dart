@@ -10,7 +10,7 @@ class FindUserAlert extends StatefulWidget {
 }
 
 class _FindUserAlertState extends State<FindUserAlert> {
-  TextEditingController _usernameCtrl = TextEditingController();
+  final TextEditingController _usernameCtrl = TextEditingController();
 
   @override
   Widget build(BuildContext context) {

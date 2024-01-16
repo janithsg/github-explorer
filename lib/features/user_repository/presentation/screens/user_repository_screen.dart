@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gh_users_viewer/core/widgets/app_bar/custom_appbar.dart';
 import 'package:gh_users_viewer/features/user_repository/bloc/repo_data_bloc.dart';
 import 'package:gh_users_viewer/features/user_repository/data/model/user_details_model.dart';
+import 'package:gh_users_viewer/features/user_repository/presentation/screens/repo_webview_screen.dart';
 import 'package:gh_users_viewer/features/user_repository/presentation/widgets/repo_list_tile.dart';
 
 class UserDetailsScreen extends StatefulWidget {
@@ -123,8 +124,20 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
           physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (context, index) {
             if (index < state.repoList.length) {
-              return RepoListTile(
-                listItem: state.repoList[index],
+              return GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => RepoWebviewScreen(
+                        repoName: state.repoList[index].fullName!,
+                        url: state.repoList[index].htmlUrl!,
+                      ),
+                    ),
+                  );
+                },
+                child: RepoListTile(
+                  listItem: state.repoList[index],
+                ),
               );
             } else {
               return const ListTile(
